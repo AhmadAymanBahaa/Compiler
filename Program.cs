@@ -1,101 +1,392 @@
-﻿using System;
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-public class FileReader
+namespace projecttt
 {
-	public int lines; // total number of lines in a file
-	string[] s;
-	public int linepos; // current character
-	public int lineno; // current line
-	char[] char_arr;
+    public class Program
+    {
+        public enum TokenType
+        {
+            //Reserved Words
+            T_IF, T_THEN, T_ELSEIF, T_FLOAT, T_STRING,
+            T_INT, T_RETURN,
+            T_WRITE,
+            T_ELSE, T_ENDL, T_REPEAT, T_UNTIL, T_READ,
 
 
-	public FileReader()
-	{
-		linepos = -1;
-		lineno = 0;
-	}
+            //One Character Tokens
+            T_ASSIGN, T_EQUALS, T_LESSTHAN, T_LARGERTHAN,
+            T_PLUS, T_MINUS, T_TIMES, T_OVER, T_LEFTPAREN, T_RIGHTPAREN,
+            T_SEMICOLON, T_LBRACES, T_RBRACES,
 
-	public void readAllFile(string filepath)
-	{
-		var fileStream = new FileStream(@filepath, FileMode.Open, FileAccess.Read);
-		using (var streamReader = new StreamReader(fileStream))
+            ERROR,NUMBER, ID,AND,OR,
 
-		{
-			string line;
-			string fileName = @filepath;
-			lines = File.ReadAllLines(fileName).Length; //count no. of lines in a file
-			s = new string[lines]; //declaring a string array of no. of lines' size
-			int i = 0;
-			//read all file
-			while ((line = streamReader.ReadLine()) != null)
-			{
-				s[i] = line;
-				i++;
-			}
-
-		}
-		 //return first line in an array of characters
-		//ToCharArray converts string to array of chars
-		char_arr = s[0].ToCharArray();
-}
+        }
+        struct identifier
+        {
+            TokenType ID;
+            string value;
+        }
 
 
-public char getNextChar()
-{
-	linepos++; //linepos initialized to 0
-			   //we didn't reach end of line
-			   // && didn't reach end of file
-	if (!(linepos < s[lineno].Length) && lineno < lines - 1) // we raeched end of line but not the end of file 
-	{
-		lineno++;
-		linepos = 0;
+        static Hashtable ReservedWords = new Hashtable()
+                {
+                    { "if", TokenType.T_IF },
+                    { "then", TokenType.T_THEN },
+                    { "float", TokenType.T_FLOAT },
+                    { "string", TokenType.T_STRING },
+                    { "int", TokenType.T_INT},
+                    { "write", TokenType.T_WRITE },
+                    { "read", TokenType.T_READ },
+                    { "repeat", TokenType.T_REPEAT },
+                    { "until", TokenType.T_UNTIL },
+                    { "elseif", TokenType.T_ELSEIF },
+                    { "else", TokenType.T_ELSE },
+                    { "return", TokenType.T_RETURN },
+                    { "endl", TokenType.T_ENDL },
+                   
+    };
 
-		//end of line
-		if (s[lineno].Length == 0)//replace the empty string between each two lines by a delimeter
-		{
-			char_arr[linepos] = '\n';
-		}
-		//middle of line
-		else // a non empty string
-			char_arr = s[lineno].ToCharArray();
-		return char_arr[linepos];
-	}
-	//broke the first if because lineno = lines - 1
-	//reached end of file
-	else if (!(linepos < s[lineno].Length) && !(lineno < lines - 1)) //reached the end of line and there is no next line
-	{
-		lineno++;// increment lineno to break from the while loop in main
-		linepos = 0;
-		char_arr[linepos] = '\n'; 
-	}
-	return char_arr[linepos]; 
+        public enum StateType
+        { START, INASSIGN, INCOMMENT, INNUM, INID, DONE, COMMENTDIV, ENDCOMMENT, INDECIMAL,ID, STRING,ANDLOGIC,ORLOGIC }
 
-}
+        public TokenType ReservedWordsLookup(string lexeme)
+        {
+            if (ReservedWords.ContainsKey(lexeme))
+            {
+                return (TokenType)(ReservedWords[lexeme]);
+            }
+            return TokenType.ID;
+        }
+        char[] tokenString;
+        void getToken(FileReader fd)
+        {  /* index for storing into tokenString */
+            int tokenStringIndex = 0;
+            /* holds current token to be returned */
+            TokenType currentToken;
+            /* current state - always begins at START */
+            StateType state = StateType.START;
+            /* flag to indicate save to tokenString */
+            Boolean save;
+            while (state != StateType.DONE && fd.lineno < fd.lines)
+            {
+                char c = fd.getNextChar();
+                save = true;
+                switch (state)
+                {
+                    case StateType.START:
+                        if (char.IsDigit(c))
+                            state = StateType.INNUM;
+                        else if (char.IsLetter(c))
+                            state = StateType.INID;
+                        else if (c == ':')
+                            state = StateType.INASSIGN;
+                        else if ((c == ' ') || (c == '\t') || (c == '\n'))
+                            save = false;
+                        else if (c == '"')
+                            state = StateType.STRING;
+                        else if (c == '/')
+                        {
+                            
+                            state = StateType.COMMENTDIV;
+                        }
+                        else if(c=='&')
+                        {
+                            state = StateType.ANDLOGIC;
+                        }
+                        else if (c == '|')
+                        {
+                            state = StateType.ORLOGIC;
+                        }
+                        else
+                        {
+                            state = StateType.DONE;
+                            switch (c)
+                            {
+                                case 'E':
+                                    save = false;
+                                    currentToken = TokenType.T_ENDL;
+                                    break;
+                                case '=':
+                                    currentToken = TokenType.T_EQUALS;
+                                    break;
+                                case '<':
+                                    currentToken = TokenType.T_LESSTHAN;
+                                    break;
+                                case '+':
+                                    currentToken = TokenType.T_PLUS;
+                                    break;
+                                case '-':
+                                    currentToken = TokenType.T_MINUS;
+                                    break;
+                                case '*':
+                                    currentToken = TokenType.T_TIMES;
+                                    break;
+                                case '/':
+                                    currentToken = TokenType.T_OVER;
+                                    break;
+                                case '(':
+                                    currentToken = TokenType.T_LEFTPAREN;
+                                    break;
+                                case ')':
+                                    currentToken = TokenType.T_RIGHTPAREN;
+                                    break;
+                                case '{':
+                                    currentToken = TokenType.T_LBRACES;
+                                    break;
+                                case '}':
+                                    currentToken = TokenType.T_RBRACES;
+                                    break;
+                                case ';':
+                                    currentToken = TokenType.T_SEMICOLON;
+                                    break;
+                                default:
+                                    currentToken = TokenType.ERROR;
+                                    break;
+                            }
+                        }
+                        break;
+                    case StateType.INCOMMENT:
+                        save = false;
+                        if (c == 'E')
+                        {
+                            state = StateType.DONE;
+                            currentToken = TokenType.T_ENDL;
+                        }
+                        else if (c == '*') state = StateType.ENDCOMMENT;
+                        break;
+                    case StateType.COMMENTDIV:
+                        if (c == '*')
+                        {
+                            save = false;
+                            state = StateType.INCOMMENT;
+                            tokenStringIndex--;
+                        }
+                        else if (c == 'E')
+                        {
+                            state = StateType.DONE;
+                            currentToken = TokenType.T_ENDL;
+                        }
+                        else state = StateType.START;
+                        break;
+                    case StateType.ENDCOMMENT:
+                        if (c == '/')
+                        {
+                            save = false;
+                            state = StateType.START;
 
-}
+                        }
+                        else
+                            state = StateType.INCOMMENT;
+                        break;
+                    case StateType.ANDLOGIC:
+                        if(c=='&')
+                        {
+                            state = StateType.DONE;
+                            currentToken = TokenType.AND;
+                        }
+                        else
+                        {
+                            fd.linepos--;
+                            save = false;
+                            currentToken = TokenType.ERROR;
+                        }
+                        break;
+                    case StateType.ORLOGIC:
+                        if (c == '|')
+                        {
+                            state = StateType.DONE;
+                            currentToken = TokenType.OR;
+                        }
+                        else
+                        {
+                            fd.linepos--;
+                            save = false;
+                            currentToken = TokenType.ERROR;
+                        }
+                        break;
+                    case StateType.STRING:
+                        if(c=='"')
+                        {
+                            state = StateType.DONE;
+                            currentToken = TokenType.T_STRING;
+                        }   
+                        break;
+                    case StateType.INASSIGN:
+                        state = StateType.DONE;
+                        if (c == '=')
+                            currentToken = TokenType.T_ASSIGN;
+                        else
+                        { /* backup in the input */
+                            fd.linepos--;
+                            save = false;
+                            currentToken = TokenType.ERROR;
+                        }
+                        break;
+                    case StateType.INNUM:
+                        if(c=='.')
+                        {
+                            state = StateType.INDECIMAL;
+                        }
+                        else if (!char.IsDigit(c))
+                        { /* backup in the input */
+                            fd.linepos--;
+                            save = false;
+                            state = StateType.DONE;
+                            currentToken = TokenType.NUMBER;
+                        }
+                        break;
+                    case StateType.INDECIMAL:
+                        if (!char.IsDigit(c))
+                        { /* backup in the input */
+                            fd.linepos--;
+                            save = false;
+                            state = StateType.DONE;
+                            currentToken = TokenType.NUMBER;
+                        }
+                        break;
+                    case StateType.INID:
+                        if (char.IsDigit(c))
+                        {
+                            state = StateType.ID;
+                        }
+                        else if(!char.IsLetter(c))
+                        { /* backup in the input */
+                            fd.linepos--;
+                            save = false;
+                            state = StateType.DONE;
+                            tokenString[tokenStringIndex] = '\0';
+                            currentToken = ReservedWordsLookup(tokenString.ToString());
+                        }
+                        break;
+                    case StateType.ID:
+                        if (!(char.IsLetter(c)|| char.IsDigit(c)))
+                        { /* backup in the input */
+                            fd.linepos--;
+                            save = false;
+                            state = StateType.DONE;
+               
+                        }
+                        break;
+
+                    case StateType.DONE:
+                    default: /* should never happen */
+                        Console.Write("Scanner Bug: state= %d\n", state);
+                        state = StateType.DONE;
+                        currentToken = TokenType.ERROR;
+                        break;
+                }
+                if (save)
+                    tokenString[tokenStringIndex++] = c;
+                if (state == StateType.DONE)
+                {
+                    tokenString[tokenStringIndex] = '\0';
+                   
+                }
+            }
+
+        }
+        public class FileReader
+        {
+            public int lines; // total number of lines in a file
+            string[] s;
+            public int linepos; // current character
+            public int lineno; // current line
+            char[] char_arr;
 
 
-public class Compiler
-{
+            public FileReader()
+            {
+                linepos = -1;
+                lineno = 0;
+            }
 
-	public static void Main()
-	{
-		FileReader fd = new FileReader();
-		fd.readAllFile("C:\\Users\\Mariam Fayed\\Downloads\\instructions.txt"); // replacable path
+            public void readAllFile(string filepath)
+            {
+                var fileStream = new FileStream(@filepath, FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream))
 
-		while (true)
-		{
-			//if reached end of file, break.
+                {
+                    string line;
+                    string fileName = @filepath;
+                    lines = File.ReadAllLines(fileName).Length; //count no. of lines in a file
+                    s = new string[lines]; //declaring a string array of no. of lines' size
+                    int i = 0;
+                    //read all file
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        s[i] = line;
+                        i++;
+                    }
 
-			if (!(fd.lineno < fd.lines))
-				break;
-			Console.Write(fd.getNextChar()); // print next character
-		}
-
-	}
-
+                }
+                //return first line in an array of characters
+                //ToCharArray converts string to array of chars
+                char_arr = s[0].ToCharArray();
+            }
 
 
+            public char getNextChar()
+            {
+                linepos++; //linepos initialized to 0
+                           //we didn't reach end of line
+                           // && didn't reach end of file
+                if (!(linepos < s[lineno].Length) && lineno < lines - 1) // we raeched end of line but not the end of file 
+                {
+                    lineno++;
+                    linepos = 0;
+
+                    //end of line
+                    if (s[lineno].Length == 0)//replace the empty string between each two lines by a delimeter
+                    {
+                        char_arr[linepos] = '\n';
+                    }
+                    //middle of line
+                    else // a non empty string
+                        char_arr = s[lineno].ToCharArray();
+                    return char_arr[linepos];
+                }
+                //broke the first if because lineno = lines - 1
+                //reached end of file
+                else if (!(linepos < s[lineno].Length) && !(lineno < lines - 1)) //reached the end of line and there is no next line
+                {
+                    lineno++;// increment lineno to break from the while loop in main
+                    linepos = 0;
+                    char_arr[linepos] = 'E';
+                }
+                return char_arr[linepos];
+
+            }
+
+
+        }
+
+
+        public class Compiler
+        {
+
+            public static void Main()
+            {
+                FileReader fd = new FileReader();
+                fd.readAllFile("C:\\Users\\User\\Downloads\\instrucciones.txt"); // replacable path
+
+                while (true)
+                {
+                    //if reached end of file, break.
+
+                    if (!(fd.lineno < fd.lines))
+                        break;
+                    Console.Write(fd.getNextChar()); // print next character
+                }
+
+            }
+
+
+
+        }
+
+    }
 }
