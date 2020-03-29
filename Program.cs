@@ -1,13 +1,21 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace projecttt
+namespace ScannerCode
 {
-    public class Program
+    public class Scanner
     {
+        //File to be scanned
+        FileReader fd = new FileReader();
+
+        //Class Constructor to Asssign the FileReader
+        public Scanner(FileReader fd)
+        {
+            this.fd = fd;
+        }
+
         public enum TokenType
         {
             //Reserved Words
@@ -22,36 +30,43 @@ namespace projecttt
             T_PLUS, T_MINUS, T_TIMES, T_OVER, T_LEFTPAREN, T_RIGHTPAREN,
             T_SEMICOLON, T_LBRACES, T_RBRACES,
 
-            ERROR,NUMBER, ID,AND,OR,
+            ERROR, NUMBER, ID, AND, OR,
 
         }
-        struct identifier
+
+        public struct identifier
         {
             TokenType ID;
             string value;
         }
 
-
-        static Hashtable ReservedWords = new Hashtable()
-                {
-                    { "if", TokenType.T_IF },
-                    { "then", TokenType.T_THEN },
-                    { "float", TokenType.T_FLOAT },
-                    { "string", TokenType.T_STRING },
-                    { "int", TokenType.T_INT},
-                    { "write", TokenType.T_WRITE },
-                    { "read", TokenType.T_READ },
-                    { "repeat", TokenType.T_REPEAT },
-                    { "until", TokenType.T_UNTIL },
-                    { "elseif", TokenType.T_ELSEIF },
-                    { "else", TokenType.T_ELSE },
-                    { "return", TokenType.T_RETURN },
-                    { "endl", TokenType.T_ENDL },
-                   
-    };
-
         public enum StateType
-        { START, INASSIGN, INCOMMENT, INNUM, INID, DONE, COMMENTDIV, ENDCOMMENT, INDECIMAL,ID, STRING,ANDLOGIC,ORLOGIC }
+        {
+            START, INASSIGN, INCOMMENT, INNUM, INID, DONE, COMMENTDIV, ENDCOMMENT, INDECIMAL, ID, STRING, ANDLOGIC, ORLOGIC
+        }
+
+        //Hashtable for reserved words lexemes & tokens
+        static Hashtable ReservedWords = new Hashtable()
+        {
+            { "if", TokenType.T_IF },
+            { "then", TokenType.T_THEN },
+            { "float", TokenType.T_FLOAT },
+            { "string", TokenType.T_STRING },
+            { "int", TokenType.T_INT },
+            { "write", TokenType.T_WRITE },
+            { "read", TokenType.T_READ },
+            { "repeat", TokenType.T_REPEAT },
+            { "until", TokenType.T_UNTIL },
+            { "elseif", TokenType.T_ELSEIF },
+            { "else", TokenType.T_ELSE },
+            { "return", TokenType.T_RETURN },
+            { "endl", TokenType.T_ENDL },
+
+        };
+
+        //List to store scanned lexems and tokens
+        //static Hashtable ScannedHashtable = new Hashtable() { };
+        List<KeyValuePair<string, TokenType>> ScannedList = new List<KeyValuePair<string, TokenType>>();
 
         public TokenType ReservedWordsLookup(string lexeme)
         {
@@ -61,23 +76,26 @@ namespace projecttt
             }
             return TokenType.ID;
         }
-        char[] tokenString;
+
+
         void getToken(FileReader fd)
         {  /* index for storing into tokenString */
             int tokenStringIndex = 0;
-            /* holds current token to be returned */
-            TokenType currentToken;
+            char[] tokenString = new char[20];
+            //Holds current token
+            TokenType currentToken = TokenType.ERROR;
             /* current state - always begins at START */
             StateType state = StateType.START;
             /* flag to indicate save to tokenString */
             Boolean save;
+
             while (state != StateType.DONE)
             {
-                 if( !(fd.lineno < fd.lines))
-                 {
-                     currentToken = TokenType.T_ENDL;
-                     break;
-                 }
+                if (!(fd.lineno < fd.lines))
+                {
+                    currentToken = TokenType.T_ENDL;
+                    break;
+                }
                 char c = fd.getNextChar();
                 save = true;
                 switch (state)
@@ -95,10 +113,9 @@ namespace projecttt
                             state = StateType.STRING;
                         else if (c == '/')
                         {
-                            
                             state = StateType.COMMENTDIV;
                         }
-                        else if(c=='&')
+                        else if (c == '&')
                         {
                             state = StateType.ANDLOGIC;
                         }
@@ -116,6 +133,9 @@ namespace projecttt
                                     break;
                                 case '<':
                                     currentToken = TokenType.T_LESSTHAN;
+                                    break;
+                                case '>':
+                                    currentToken = TokenType.T_LARGERTHAN;
                                     break;
                                 case '+':
                                     currentToken = TokenType.T_PLUS;
@@ -174,7 +194,7 @@ namespace projecttt
                             state = StateType.INCOMMENT;
                         break;
                     case StateType.ANDLOGIC:
-                        if(c=='&')
+                        if (c == '&')
                         {
                             state = StateType.DONE;
                             currentToken = TokenType.AND;
@@ -200,11 +220,11 @@ namespace projecttt
                         }
                         break;
                     case StateType.STRING:
-                        if(c=='"')
+                        if (c == '"')
                         {
                             state = StateType.DONE;
                             currentToken = TokenType.T_STRING;
-                        }   
+                        }
                         break;
                     case StateType.INASSIGN:
                         state = StateType.DONE;
@@ -218,7 +238,7 @@ namespace projecttt
                         }
                         break;
                     case StateType.INNUM:
-                        if(c=='.')
+                        if (c == '.')
                         {
                             state = StateType.INDECIMAL;
                         }
@@ -244,22 +264,21 @@ namespace projecttt
                         {
                             state = StateType.ID;
                         }
-                        else if(!char.IsLetter(c))
+                        else if (!char.IsLetter(c))
                         { /* backup in the input */
                             fd.linepos--;
                             save = false;
                             state = StateType.DONE;
-                            tokenString[tokenStringIndex] = '\0';
-                            currentToken = ReservedWordsLookup(tokenString.ToString());
+                            currentToken = ReservedWordsLookup(new string(tokenString).Trim('\0'));
                         }
                         break;
                     case StateType.ID:
-                        if (!(char.IsLetter(c)|| char.IsDigit(c)))
+                        if (!(char.IsLetter(c) || char.IsDigit(c)))
                         { /* backup in the input */
                             fd.linepos--;
                             save = false;
                             state = StateType.DONE;
-               
+
                         }
                         break;
 
@@ -274,110 +293,128 @@ namespace projecttt
                     tokenString[tokenStringIndex++] = c;
                 if (state == StateType.DONE)
                 {
-                    tokenString[tokenStringIndex] = '\0';
-                   
+                    addScanned(tokenString, currentToken);
                 }
             }
 
         }
-        public class FileReader
+
+        //add each lexeme scanned to Scanned hashtable
+        void addScanned(char[] tokenString, TokenType token)
         {
-            public int lines; // total number of lines in a file
-            string[] s;
-            public int linepos; // current character
-            public int lineno; // current line
-            char[] char_arr;
+            //ScannedHashtable.Add(new string(tokenString), token);
+            ScannedList.Add(new KeyValuePair<string, TokenType>(new string(tokenString), token));
+        }
 
-
-            public FileReader()
+        public void scanAndPrint()
+        {
+            while (fd.lineno < fd.lines)
             {
-                linepos = -1;
-                lineno = 0;
+                getToken(fd);
             }
+            printScanned();
+        }
 
-            public void readAllFile(string filepath)
+        //Print scanned lexemes and their tokens
+        void printScanned()
+        {
+            Console.WriteLine("Lexeme              :  Token \n");
+            foreach (var lexeme in ScannedList)
             {
-                var fileStream = new FileStream(@filepath, FileMode.Open, FileAccess.Read);
-                using (var streamReader = new StreamReader(fileStream))
-
-                {
-                    string line;
-                    string fileName = @filepath;
-                    lines = File.ReadAllLines(fileName).Length; //count no. of lines in a file
-                    s = new string[lines]; //declaring a string array of no. of lines' size
-                    int i = 0;
-                    //read all file
-                    while ((line = streamReader.ReadLine()) != null)
-                    {
-                        s[i] = line;
-                        i++;
-                    }
-
-                }
-                //return first line in an array of characters
-                //ToCharArray converts string to array of chars
-                char_arr = s[0].ToCharArray();
+                Console.WriteLine(String.Format("{0}:  {1}", lexeme.Key, lexeme.Value));
             }
+        }
+
+    }
+
+    public class FileReader
+    {
+        public int lines; // total number of lines in a file
+        string[] s;
+        public int linepos; // current character
+        public int lineno; // current line
+        char[] char_arr;
 
 
-            public char getNextChar()
+        public FileReader()
+        {
+            linepos = -1;
+            lineno = 0;
+        }
+
+        public void readAllFile(string filepath)
+        {
+            var fileStream = new FileStream(@filepath, FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream))
+
             {
-                linepos++; //linepos initialized to 0
-                           //we didn't reach end of line
-                           // && didn't reach end of file
-                if (!(linepos < s[lineno].Length) && lineno < lines - 1) // we raeched end of line but not the end of file 
+                string line;
+                string fileName = @filepath;
+                lines = File.ReadAllLines(fileName).Length; //count no. of lines in a file
+                s = new string[lines]; //declaring a string array of no. of lines' size
+                int i = 0;
+                //read all file
+                while ((line = streamReader.ReadLine()) != null)
                 {
-                    lineno++;
-                    linepos = 0;
-
-                    //end of line
-                    if (s[lineno].Length == 0)//replace the empty string between each two lines by a delimeter
-                    {
-                        char_arr[linepos] = '\n';
-                    }
-                    //middle of line
-                    else // a non empty string
-                        char_arr = s[lineno].ToCharArray();
-                    return char_arr[linepos];
+                    s[i] = line;
+                    i++;
                 }
-                //broke the first if because lineno = lines - 1
-                //reached end of file
-                else if (!(linepos < s[lineno].Length) && !(lineno < lines - 1)) //reached the end of line and there is no next line
+
+            }
+            //return first line in an array of characters
+            //ToCharArray converts string to array of chars
+            char_arr = s[0].ToCharArray();
+        }
+
+
+        public char getNextChar()
+        {
+            linepos++; //linepos initialized to 0
+                       //we didn't reach end of line
+                       // && didn't reach end of file
+            if (!(linepos < s[lineno].Length) && lineno < lines - 1) // we raeched end of line but not the end of file 
+            {
+                lineno++;
+                linepos = 0;
+
+                //end of line
+                if (s[lineno].Length == 0)//replace the empty string between each two lines by a delimeter
                 {
-                    lineno++;// increment lineno to break from the while loop in main
-                    linepos = 0;
                     char_arr[linepos] = '\n';
                 }
+                //middle of line
+                else // a non empty string
+                    char_arr = s[lineno].ToCharArray();
                 return char_arr[linepos];
-
             }
-
-
-        }
-
-
-        public class Compiler
-        {
-
-            public static void Main()
+            //broke the first if because lineno = lines - 1
+            //reached end of file
+            else if (!(linepos < s[lineno].Length) && !(lineno < lines - 1)) //reached the end of line and there is no next line
             {
-                FileReader fd = new FileReader();
-                fd.readAllFile("C:\\Users\\User\\Downloads\\instrucciones.txt"); // replacable path
-
-                while (true)
-                {
-                    //if reached end of file, break.
-
-                    if (!(fd.lineno < fd.lines))
-                        break;
-                    Console.Write(fd.getNextChar()); // print next character
-                }
-
+                lineno++;// increment lineno to break from the while loop in main
+                linepos = 0;
+                char_arr[linepos] = '\n';
             }
-
-
+            return char_arr[linepos];
 
         }
 
     }
+
+    public class MainClass
+    {
+        public static void Main()
+        {
+            FileReader fd = new FileReader();
+            fd.readAllFile("C:\\Users\\ahmad\\Documents\\Visual Studio 2017\\Projects\\Compilers_Scanner\\Code.txt"); // replacable path
+
+            Scanner Scanner = new Scanner(fd);
+            Scanner.scanAndPrint();
+
+      
+            Console.ReadLine();
+
+        }
+    }
+
 }
