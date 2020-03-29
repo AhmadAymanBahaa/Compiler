@@ -71,8 +71,13 @@ namespace projecttt
             StateType state = StateType.START;
             /* flag to indicate save to tokenString */
             Boolean save;
-            while (state != StateType.DONE && fd.lineno < fd.lines)
+            while (state != StateType.DONE)
             {
+                 if( !(fd.lineno < fd.lines))
+                 {
+                     currentToken = TokenType.T_ENDL;
+                     break;
+                 }
                 char c = fd.getNextChar();
                 save = true;
                 switch (state)
@@ -106,10 +111,6 @@ namespace projecttt
                             state = StateType.DONE;
                             switch (c)
                             {
-                                case 'E':
-                                    save = false;
-                                    currentToken = TokenType.T_ENDL;
-                                    break;
                                 case '=':
                                     currentToken = TokenType.T_EQUALS;
                                     break;
@@ -151,12 +152,7 @@ namespace projecttt
                         break;
                     case StateType.INCOMMENT:
                         save = false;
-                        if (c == 'E')
-                        {
-                            state = StateType.DONE;
-                            currentToken = TokenType.T_ENDL;
-                        }
-                        else if (c == '*') state = StateType.ENDCOMMENT;
+                        if (c == '*') state = StateType.ENDCOMMENT;
                         break;
                     case StateType.COMMENTDIV:
                         if (c == '*')
@@ -164,11 +160,6 @@ namespace projecttt
                             save = false;
                             state = StateType.INCOMMENT;
                             tokenStringIndex--;
-                        }
-                        else if (c == 'E')
-                        {
-                            state = StateType.DONE;
-                            currentToken = TokenType.T_ENDL;
                         }
                         else state = StateType.START;
                         break;
@@ -355,7 +346,7 @@ namespace projecttt
                 {
                     lineno++;// increment lineno to break from the while loop in main
                     linepos = 0;
-                    char_arr[linepos] = 'E';
+                    char_arr[linepos] = '\n';
                 }
                 return char_arr[linepos];
 
