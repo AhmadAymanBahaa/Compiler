@@ -28,7 +28,7 @@ namespace ScannerCode
             //One Character Tokens
             T_ASSIGN, T_EQUALS, T_LESSTHAN, T_LARGERTHAN,
             T_PLUS, T_MINUS, T_TIMES, T_OVER, T_LEFTPAREN, T_RIGHTPAREN,
-            T_SEMICOLON, T_LBRACES, T_RBRACES,
+            T_SEMICOLON, T_LBRACES, T_RBRACES,T_COMMA,
 
             ERROR, NUMBER, ID, AND, OR,
 
@@ -163,6 +163,9 @@ namespace ScannerCode
                                     break;
                                 case ';':
                                     currentToken = TokenType.T_SEMICOLON;
+                                    break;
+                                case ',':
+                                    currentToken = TokenType.T_COMMA;
                                     break;
                                 default:
                                     currentToken = TokenType.ERROR;
