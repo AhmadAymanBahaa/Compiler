@@ -21,14 +21,14 @@ namespace ScannerCode
             //Reserved Words
             T_IF, T_THEN, T_ELSEIF, T_FLOAT, T_STRING,
             T_INT, T_RETURN,
-            T_WRITE,
+            T_WRITE, T_END,
             T_ELSE, T_ENDL, T_REPEAT, T_UNTIL, T_READ,
 
 
             //One Character Tokens
             T_ASSIGN, T_EQUALS, T_LESSTHAN, T_LARGERTHAN,
             T_PLUS, T_MINUS, T_TIMES, T_OVER, T_LEFTPAREN, T_RIGHTPAREN,
-            T_SEMICOLON, T_LBRACES, T_RBRACES,T_COMMA,
+            T_SEMICOLON, T_LBRACES, T_RBRACES, T_COMMA,
 
             ERROR, NUMBER, ID, AND, OR,
 
@@ -61,6 +61,7 @@ namespace ScannerCode
             { "else", TokenType.T_ELSE },
             { "return", TokenType.T_RETURN },
             { "endl", TokenType.T_ENDL },
+            { "end", TokenType.T_END },
 
         };
 
@@ -81,7 +82,7 @@ namespace ScannerCode
         void getToken(FileReader fd)
         {  /* index for storing into tokenString */
             int tokenStringIndex = 0;
-            char[] tokenString = new char[20];
+            char[] tokenString = new char[40];
             //Holds current token
             TokenType currentToken = TokenType.ERROR;
             /* current state - always begins at START */
@@ -146,14 +147,14 @@ namespace ScannerCode
                                 case '*':
                                     currentToken = TokenType.T_TIMES;
                                     break;
-                                case '/':
-                                    currentToken = TokenType.T_OVER;
-                                    break;
                                 case '(':
                                     currentToken = TokenType.T_LEFTPAREN;
                                     break;
                                 case ')':
                                     currentToken = TokenType.T_RIGHTPAREN;
+                                    break;
+                                case ',':
+                                    currentToken = TokenType.T_COMMA;
                                     break;
                                 case '{':
                                     currentToken = TokenType.T_LBRACES;
@@ -163,9 +164,6 @@ namespace ScannerCode
                                     break;
                                 case ';':
                                     currentToken = TokenType.T_SEMICOLON;
-                                    break;
-                                case ',':
-                                    currentToken = TokenType.T_COMMA;
                                     break;
                                 default:
                                     currentToken = TokenType.ERROR;
@@ -184,7 +182,13 @@ namespace ScannerCode
                             state = StateType.INCOMMENT;
                             tokenStringIndex--;
                         }
-                        else state = StateType.START;
+                        else
+                        {
+                            currentToken = TokenType.T_OVER;
+                            save = false;
+                            fd.linepos--;
+                            state = StateType.DONE;
+                        }
                         break;
                     case StateType.ENDCOMMENT:
                         if (c == '/')
@@ -280,6 +284,7 @@ namespace ScannerCode
                         { /* backup in the input */
                             fd.linepos--;
                             save = false;
+                            currentToken = TokenType.ID;
                             state = StateType.DONE;
 
                         }
@@ -360,6 +365,7 @@ namespace ScannerCode
                 while ((line = streamReader.ReadLine()) != null)
                 {
                     s[i] = line;
+                    s[i] += '\n';
                     i++;
                 }
 
@@ -414,9 +420,7 @@ namespace ScannerCode
             Scanner Scanner = new Scanner(fd);
             Scanner.scanAndPrint();
 
-      
             Console.ReadLine();
-
         }
     }
 
