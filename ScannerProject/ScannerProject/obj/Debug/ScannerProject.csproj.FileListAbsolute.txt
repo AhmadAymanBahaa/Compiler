@@ -1,0 +1,12 @@
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csprojResolveAssemblyReference.cache
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.home.resources
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.import.resources
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.Properties.Resources.resources
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.GenerateResource.Cache
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.CoreCompileInputs.cache
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe.config
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\bin\Debug\ScannerProject.pdb
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb
+C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.write.resources
