@@ -14,7 +14,7 @@ namespace ScannerProject
     {
         FileReader file = new FileReader();
         Scanner scanner;
-        string text = "Lexeme           : Token" + Environment.NewLine + Environment.NewLine;
+        string text = "Lexeme \t\t Token" + Environment.NewLine + Environment.NewLine;
 
 
         public import()
@@ -63,7 +63,7 @@ namespace ScannerProject
 
                 //textBox2.Text = String.Join(Environment.NewLine, scanner.ScannedList);
 
-                text += String.Format("{0}:                 {1}", lexeme.Key.Trim('\0'), lexeme.Value);
+                text += String.Format("{0} \t\t {1}", lexeme.Key.Trim('\0'), lexeme.Value);
                 text += Environment.NewLine;
 
             }
