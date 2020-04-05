@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,41 +11,42 @@ using System.Windows.Forms;
 
 namespace ScannerProject
 {
-    public partial class import : Form
+    public partial class write : Form
     {
         FileReader file = new FileReader();
         Scanner scanner;
         string text = "Lexeme \t\t\t Token" + Environment.NewLine + Environment.NewLine;
+        string path = "";
         
-        public import()
+        public write()
         {
             InitializeComponent();
         }
 
-        private void import_Load(object sender, EventArgs e)
+        private void write_Load(object sender, EventArgs e)
         {
 
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DialogResult dr = openFileDialog1.ShowDialog();
-            if (dr == System.Windows.Forms.DialogResult.OK)
-            {
-                textBox1.Text = openFileDialog1.FileName;
-                file.readAllFile(textBox1.Text);
-                textBox2.Text = System.IO.File.ReadAllText(openFileDialog1.FileName);
-            }
+            path += textBox1.Text;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(textBox1.Text))
+
+                path = "code.txt";
+
+            else
+                path += "\\code.txt";
+
+            StreamWriter newfile = new StreamWriter(path);
+            newfile.Write(textBox2.Text);
+            newfile.Close();
+            file.readAllFile(path);
             display();
-        }
-
-        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-
         }
 
         void display()
@@ -59,22 +61,25 @@ namespace ScannerProject
             foreach (var lexeme in scanner.ScannedList)
             {
 
-
-                //textBox2.Text = String.Join(Environment.NewLine, scanner.ScannedList);
-
                 text += String.Format("{0} \t\t\t {1}", lexeme.Key.Trim('\0'), lexeme.Value);
                 text += Environment.NewLine;
+
             }
-            if (scanner.checkUnmatchedBraces()) text += "Unmatched Braces";
+            //if (scanner.checkUnmatchedBraces()) text += "Unmatched Braces";
             textBox2.Text = text;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
         }
