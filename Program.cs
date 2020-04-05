@@ -201,9 +201,9 @@ namespace ScannerCode
                             state = StateType.INCOMMENT;
                         break;
                     case StateType.ANDLOGIC:
+                          state = StateType.DONE;
                         if (c == '&')
                         {
-                            state = StateType.DONE;
                             currentToken = TokenType.AND;
                         }
                         else
@@ -214,9 +214,9 @@ namespace ScannerCode
                         }
                         break;
                     case StateType.ORLOGIC:
+                         state = StateType.DONE;
                         if (c == '|')
                         {
-                            state = StateType.DONE;
                             currentToken = TokenType.OR;
                         }
                         else
