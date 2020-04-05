@@ -10,3 +10,26 @@ C:\Users\fhama\source\repos\ScannerProject\ScannerProject\bin\Debug\ScannerProje
 C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
 C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb
 C:\Users\fhama\source\repos\ScannerProject\ScannerProject\obj\Debug\ScannerProject.write.resources
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe.config
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\bin\Debug\ScannerProject.pdb
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csprojResolveAssemblyReference.cache
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.home.resources
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.import.resources
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.Properties.Resources.resources
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.write.resources
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.GenerateResource.Cache
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
+C:\Users\ahmad\Documents\Visual Studio 2017\Projects\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe.config
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\bin\Debug\ScannerProject.exe
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\bin\Debug\ScannerProject.pdb
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csprojResolveAssemblyReference.cache
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.home.resources
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.import.resources
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.Properties.Resources.resources
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.write.resources
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.GenerateResource.Cache
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.CoreCompileInputs.cache
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
+C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb

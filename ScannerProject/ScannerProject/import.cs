@@ -65,8 +65,16 @@ namespace ScannerProject
                 text += String.Format("{0} \t\t\t {1}", lexeme.Key.Trim('\0'), lexeme.Value);
                 text += Environment.NewLine;
             }
-            if (scanner.checkUnmatchedBraces()) text += "Unmatched Braces";
             textBox2.Text = text;
+            if (scanner.checkUnmatchedBraces())
+                MessageBox.Show("Unmached Braces Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (scanner.checkUnmatchedParanthesis())
+                MessageBox.Show("Unmached Parenhesis Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (scanner.checkUnmatchedQuotes())
+                MessageBox.Show("Unmached Quotes Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
