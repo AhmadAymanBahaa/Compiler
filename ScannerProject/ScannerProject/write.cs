@@ -47,6 +47,15 @@ namespace ScannerProject
             newfile.Close();
             file.readAllFile(path);
             display();
+
+            if (scanner.checkUnmatchedBraces())
+                MessageBox.Show("Unmached Braces Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (scanner.checkUnmatchedParanthesis())
+                MessageBox.Show("Unmached Parenhesis Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (scanner.checkUnmatchedQuotes())
+                MessageBox.Show("Unmached Quotes Error", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
         }
 
         void display()

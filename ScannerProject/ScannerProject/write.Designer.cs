@@ -35,7 +35,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -83,7 +82,7 @@
             this.button1.Font = new System.Drawing.Font("Segoe Print", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(691, 111);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(161, 39);
+            this.button1.Size = new System.Drawing.Size(174, 39);
             this.button1.TabIndex = 4;
             this.button1.Text = "Add Path";
             this.button1.UseVisualStyleBackColor = true;
@@ -92,9 +91,9 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(48, 382);
+            this.button2.Location = new System.Drawing.Point(691, 176);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(161, 39);
+            this.button2.Size = new System.Drawing.Size(174, 39);
             this.button2.TabIndex = 5;
             this.button2.Text = "Save/Run";
             this.button2.UseVisualStyleBackColor = true;
@@ -104,24 +103,14 @@
             // 
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label4.Location = new System.Drawing.Point(237, 382);
+            this.label4.Location = new System.Drawing.Point(691, 220);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(396, 59);
+            this.label4.Size = new System.Drawing.Size(174, 142);
             this.label4.TabIndex = 7;
             this.label4.Text = "Note: You can either enter the desired path and click the Add Path button , or cl" +
     "ick the Save/Run button after entering the code to save it in the project\'s dire" +
     "ctory.";
             this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
-            // textBox3
-            // 
-            this.textBox3.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(670, 176);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox3.Size = new System.Drawing.Size(208, 186);
-            this.textBox3.TabIndex = 8;
             // 
             // write
             // 
@@ -129,7 +118,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(919, 462);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -154,6 +142,5 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox3;
     }
 }

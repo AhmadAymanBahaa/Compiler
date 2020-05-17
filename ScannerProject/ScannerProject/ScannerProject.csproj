@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parser.cs" />
     <Compile Include="home.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,7 +58,7 @@
     <Compile Include="import.Designer.cs">
       <DependentUpon>import.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Scanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="write.cs">
       <SubType>Form</SubType>
