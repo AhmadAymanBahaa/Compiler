@@ -104,6 +104,7 @@ namespace ScannerProject
             }
             return t;
         }
+
         TreeNode statement()
         {
             TreeNode t = null;
@@ -123,9 +124,7 @@ namespace ScannerProject
             } /* end case */
             return t;
         }
-
-
-
+        
 
         TreeNode if_stmt()
         {
@@ -181,6 +180,93 @@ namespace ScannerProject
             if (t != null) t.child[0] = exp();
             return t;
         }
-    }
 
+        TreeNode exp()
+        {
+            TreeNode t = simple_exp();
+            if ((token == TokenType.T_LESSTHAN) || (token == TokenType.T_EQUALS))
+            {
+                TreeNode p = newExpNode(ExpKind.OpK);
+                if (p != null)
+                {
+                    p.child[0] = t;
+                    p.attr.op = token;
+                    t = p;
+                }
+                match(token);
+                if (t != null)
+                    t.child[1] = simple_exp();
+            }
+            return t;
+        }
+        TreeNode simple_exp()
+        {
+            TreeNode t = term();
+            while ((token ==TokenType.T_PLUS) || (token == TokenType.T_MINUS))
+            {
+                TreeNode p = newExpNode(ExpKind.OpK);
+                if (p != null)
+                {
+                    p.child[0] = t;
+                    p.attr.op = token;
+                    t = p;
+                    match(token);
+                    t.child[1] = term();
+                }
+            }
+            return t;
+        }
+
+        TreeNode term()
+        {
+            TreeNode t = factor();
+            while ((token == TokenType.T_TIMES) || (token == TokenType.T_OVER))
+            {
+                TreeNode p = newExpNode(ExpKind.OpK);
+                if (p != null)
+                {
+                    p.child[0] = t;
+                    p.attr.op = token;
+                    t = p;
+                    match(token);
+                    p.child[1] = factor();
+                }
+            }
+            return t;
+        }
+
+        TreeNode factor()
+        {
+            TreeNode t = null;
+            switch (token)
+            {
+                case TokenType.NUMBER:
+                    t = newExpNode(ExpKind.ConstK);
+                    if ((t != null) && (token == TokenType.NUMBER))
+        
+                        t.attr.val = int.Parse(new string (S.tokenString));
+                    match(TokenType.NUMBER);
+                    break;
+                case TokenType.T_ID:
+                    t = newExpNode(ExpKind.IdK);
+                    if ((t != null) && (token == TokenType.T_ID))
+                       // t.attr.name = copyString(S.tokenString);
+                    match(TokenType.T_ID);
+                    break;
+                case TokenType.T_LEFTPAREN:
+                    match(TokenType.T_LEFTPAREN);
+                    t = exp();
+                    match(TokenType.T_RIGHTPAREN);
+                    break;
+                default:
+                    // syntaxError("unexpected token -> ");
+                    //printToken(token, S.tokenString);
+                    Console.WriteLine(token);
+                    token = getToken();
+                    break;
+            }
+            return t;
+        }
+
+    }
 }

@@ -103,11 +103,12 @@ namespace ScannerProject
             return TokenType.ID;
         }
 
+       public char[] tokenString;
 
         public void getToken(FileReader fd)
         {  /* index for storing into tokenString */
             int tokenStringIndex = 0;
-            char[] tokenString = new char[40];
+            tokenString = new char[40];
             //Holds current token
             TokenType currentToken = TokenType.ERROR;
             /* current state - always begins at START */
