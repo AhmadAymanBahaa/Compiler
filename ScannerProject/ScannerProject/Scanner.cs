@@ -103,12 +103,11 @@ namespace ScannerProject
             return TokenType.ID;
         }
 
-       public char[] tokenString;
 
         public void getToken(FileReader fd)
         {  /* index for storing into tokenString */
             int tokenStringIndex = 0;
-            tokenString = new char[40];
+            char[] tokenString = new char[40];
             //Holds current token
             TokenType currentToken = TokenType.ERROR;
             /* current state - always begins at START */
@@ -387,6 +386,15 @@ namespace ScannerProject
             }
             ScannedList.Add(new KeyValuePair<string, TokenType>("EndOfFile", TokenType.ENDFILE));
             printScanned();
+        }
+        public List<KeyValuePair<string, TokenType>> scan()
+        {
+            while (fd.lineno < fd.lines)
+            {
+                getToken(fd);
+            }
+            ScannedList.Add(new KeyValuePair<string, TokenType>("EndOfFile", TokenType.ENDFILE));
+            return ScannedList;
         }
 
         //Print scanned lexemes and their tokens

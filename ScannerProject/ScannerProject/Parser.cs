@@ -6,7 +6,7 @@ namespace ScannerProject
     public enum NodeKind { StmtK, ExpK };
     public enum StmtKind { IfK, RepeatK, AssignK, ReadK, WriteK };
     public enum ExpKind { OpK, ConstK, IdK };
-    public enum ExpType { Void , Integer, Boolean };
+    public enum ExpType { Void, Integer, Boolean };
 
     class Parser
     {
@@ -16,6 +16,14 @@ namespace ScannerProject
 
         public TokenType token;
         public int currentTokenNumber = 0;
+
+        public Parser(FileReader path) {
+            fd = path;
+        }
+
+        public List<KeyValuePair<string, TokenType>> ScanFile() {
+            return S.scan();
+        }
 
         public class TreeNode
         {
@@ -64,7 +72,7 @@ namespace ScannerProject
             return t;
         }
 
-         void match(TokenType expected)
+        void match(TokenType expected)
         {
             if (token == expected) token = getToken();
             else
@@ -76,7 +84,8 @@ namespace ScannerProject
             }
         }
 
-        public TokenType getToken() {
+        public TokenType getToken()
+        {
             return S.ScannedList[currentTokenNumber++].Value;
         }
 
@@ -124,7 +133,7 @@ namespace ScannerProject
             } /* end case */
             return t;
         }
-        
+
 
         TreeNode if_stmt()
         {
@@ -156,8 +165,8 @@ namespace ScannerProject
         {
             TreeNode t = newStmtNode(StmtKind.AssignK);
             if ((t != null) && (token == TokenType.T_ID))
-            //    t.attr.name = copyString(tokenString);
-            match(TokenType.T_ID);
+                //    t.attr.name = copyString(tokenString);
+                match(TokenType.T_ID);
             match(TokenType.T_ASSIGN);
             if (t != null) t.child[0] = exp();
             return t;
@@ -168,8 +177,8 @@ namespace ScannerProject
             TreeNode t = newStmtNode(StmtKind.ReadK);
             match(TokenType.T_READ);
             if ((t != null) && (token == TokenType.T_ID))
-               // t.attr.name = copyString(tokenString);
-            match(TokenType.T_ID);
+                // t.attr.name = copyString(tokenString);
+                match(TokenType.T_ID);
             return t;
         }
 
@@ -202,7 +211,7 @@ namespace ScannerProject
         TreeNode simple_exp()
         {
             TreeNode t = term();
-            while ((token ==TokenType.T_PLUS) || (token == TokenType.T_MINUS))
+            while ((token == TokenType.T_PLUS) || (token == TokenType.T_MINUS))
             {
                 TreeNode p = newExpNode(ExpKind.OpK);
                 if (p != null)
@@ -243,15 +252,14 @@ namespace ScannerProject
                 case TokenType.NUMBER:
                     t = newExpNode(ExpKind.ConstK);
                     if ((t != null) && (token == TokenType.NUMBER))
-        
-                        t.attr.val = int.Parse(new string (S.tokenString));
+                        t.attr.val = int.Parse(new string(S.tokenString));
                     match(TokenType.NUMBER);
                     break;
                 case TokenType.T_ID:
                     t = newExpNode(ExpKind.IdK);
                     if ((t != null) && (token == TokenType.T_ID))
-                       // t.attr.name = copyString(S.tokenString);
-                    match(TokenType.T_ID);
+                        // t.attr.name = copyString(S.tokenString);
+                        match(TokenType.T_ID);
                     break;
                 case TokenType.T_LEFTPAREN:
                     match(TokenType.T_LEFTPAREN);
