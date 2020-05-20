@@ -14,7 +14,7 @@ namespace ScannerProject
         Scanner S = new Scanner(fd);
         public const int MAXCHILDREN = 3;
 
-        public TokenType token;
+        public KeyValuePair<string, TokenType> token;
         public int currentTokenNumber = 0;
 
         public Parser(FileReader path) {
@@ -74,7 +74,7 @@ namespace ScannerProject
 
         void match(TokenType expected)
         {
-            if (token == expected) token = getToken();
+            if (token.Value == expected) token = getToken();
             else
             {
                 /* syntaxError("unexpected token -> ");
@@ -84,9 +84,9 @@ namespace ScannerProject
             }
         }
 
-        public TokenType getToken()
+        public KeyValuePair<string, TokenType> getToken()
         {
-            return S.ScannedList[currentTokenNumber++].Value;
+            return S.ScannedList[currentTokenNumber++];
         }
 
 
@@ -95,8 +95,8 @@ namespace ScannerProject
             TreeNode t = statement();
             TreeNode p = t;
             //add end token 
-            while ((token != TokenType.ENDFILE) && (token != TokenType.T_END) &&
-                   (token != TokenType.T_ELSE) && (token != TokenType.T_UNTIL))
+            while ((token.Value != TokenType.ENDFILE) && (token.Value != TokenType.T_END) &&
+                   (token.Value != TokenType.T_ELSE) && (token.Value != TokenType.T_UNTIL))
             {
                 TreeNode q;
                 match(TokenType.T_SEMICOLON);
@@ -117,7 +117,7 @@ namespace ScannerProject
         TreeNode statement()
         {
             TreeNode t = null;
-            switch (token)
+            switch (token.Value)
             {
                 case TokenType.T_IF: t = if_stmt(); break;
                 case TokenType.T_REPEAT: t = repeat_stmt(); break;
@@ -142,7 +142,7 @@ namespace ScannerProject
             if (t != null) t.child[0] = exp();
             match(TokenType.T_THEN);
             if (t != null) t.child[1] = stmt_sequence();
-            if (token == TokenType.T_ELSE)
+            if (token.Value == TokenType.T_ELSE)
             {
                 match(TokenType.T_ELSE);
                 if (t != null) t.child[2] = stmt_sequence();
@@ -164,7 +164,7 @@ namespace ScannerProject
         TreeNode assign_stmt()
         {
             TreeNode t = newStmtNode(StmtKind.AssignK);
-            if ((t != null) && (token == TokenType.ID))
+            if ((t != null) && (token.Value == TokenType.ID))
                 //    t.attr.name = copyString(tokenString);
                 match(TokenType.ID);
             match(TokenType.T_ASSIGN);
@@ -176,7 +176,7 @@ namespace ScannerProject
         {
             TreeNode t = newStmtNode(StmtKind.ReadK);
             match(TokenType.T_READ);
-            if ((t != null) && (token == TokenType.ID))
+            if ((t != null) && (token.Value == TokenType.ID))
                 // t.attr.name = copyString(tokenString);
                 match(TokenType.ID);
             return t;
@@ -193,16 +193,16 @@ namespace ScannerProject
         TreeNode exp()
         {
             TreeNode t = simple_exp();
-            if ((token == TokenType.T_LESSTHAN) || (token == TokenType.T_EQUALS))
+            if ((token.Value == TokenType.T_LESSTHAN) || (token.Value == TokenType.T_EQUALS))
             {
                 TreeNode p = newExpNode(ExpKind.OpK);
                 if (p != null)
                 {
                     p.child[0] = t;
-                    p.attr.op = token;
+                    p.attr.op = token.Value;
                     t = p;
                 }
-                match(token);
+                match(token.Value);
                 if (t != null)
                     t.child[1] = simple_exp();
             }
@@ -211,15 +211,15 @@ namespace ScannerProject
         TreeNode simple_exp()
         {
             TreeNode t = term();
-            while ((token == TokenType.T_PLUS) || (token == TokenType.T_MINUS))
+            while ((token.Value == TokenType.T_PLUS) || (token.Value == TokenType.T_MINUS))
             {
                 TreeNode p = newExpNode(ExpKind.OpK);
                 if (p != null)
                 {
                     p.child[0] = t;
-                    p.attr.op = token;
+                    p.attr.op = token.Value;
                     t = p;
-                    match(token);
+                    match(token.Value);
                     t.child[1] = term();
                 }
             }
@@ -229,15 +229,15 @@ namespace ScannerProject
         TreeNode term()
         {
             TreeNode t = factor();
-            while ((token == TokenType.T_TIMES) || (token == TokenType.T_OVER))
+            while ((token.Value == TokenType.T_TIMES) || (token.Value == TokenType.T_OVER))
             {
                 TreeNode p = newExpNode(ExpKind.OpK);
                 if (p != null)
                 {
                     p.child[0] = t;
-                    p.attr.op = token;
+                    p.attr.op = token.Value;
                     t = p;
-                    match(token);
+                    match(token.Value);
                     p.child[1] = factor();
                 }
             }
@@ -247,17 +247,17 @@ namespace ScannerProject
         TreeNode factor()
         {
             TreeNode t = null;
-            switch (token)
+            switch (token.Value)
             {
                 case TokenType.NUMBER:
                     t = newExpNode(ExpKind.ConstK);
-                    if ((t != null) && (token == TokenType.NUMBER))
-                        t.attr.val = int.Parse(new string(S.tokenString));
+                    if ((t != null) && (token.Value == TokenType.NUMBER))
+                        t.attr.val = int.Parse(token.Key);
                     match(TokenType.NUMBER);
                     break;
                 case TokenType.ID:
                     t = newExpNode(ExpKind.IdK);
-                    if ((t != null) && (token == TokenType.ID))
+                    if ((t != null) && (token.Value == TokenType.ID))
                         // t.attr.name = copyString(S.tokenString);
                         match(TokenType.ID);
                     break;
