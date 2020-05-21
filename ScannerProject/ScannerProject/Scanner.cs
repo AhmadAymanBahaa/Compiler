@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+
 
 namespace ScannerProject
 {
@@ -20,7 +20,6 @@ namespace ScannerProject
         T_INT, T_RETURN,
         T_WRITE, T_END,
         T_ELSE, T_ENDL, T_REPEAT, T_UNTIL, T_READ,
-        T_ID,
 
         //One Character Tokens
         T_ASSIGN, T_EQUALS, T_LESSTHAN, T_LARGERTHAN,
@@ -33,19 +32,7 @@ namespace ScannerProject
         ENDFILE,
     }
 
-    static class Program
-    {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new home());
-        }
-    }
+
 
     public class Scanner
     {
