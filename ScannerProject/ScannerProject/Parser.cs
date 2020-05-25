@@ -299,17 +299,70 @@ namespace ScannerProject
                 Console.Write("Code ends before file\n");
             printTree(t);
         }
+
+        void printTree(TreeNode tree)
+        {
+            int i;
+            while (tree != null)
+            {
+                if (tree.nodekind == NodeKind.StmtK)
+                {
+                    switch (tree.kind.stmt)
+                    {
+                        case StmtKind.IfK:
+                            Console.Write("If");
+                            break;
+                        case StmtKind.RepeatK:
+                            Console.Write("Repeat");
+                            break;
+                        case StmtKind.AssignK:
+                            Console.Write("Assign to: %s\n" + tree.attr.name);
+                            break;
+                        case StmtKind.ReadK:
+                            Console.Write ("Read: %s\n" + tree.attr.name);
+                            break;
+                        case StmtKind.WriteK:
+                            Console.Write ("Write");
+                            break;
+                        default:
+                            Console.Write("Unknown ExpNode kind\n");
+                            break;
+                    }
+                }
+                else if (tree.nodekind == NodeKind.ExpK)
+                {
+                    switch (tree.kind.exp)
+                    {
+                        case ExpKind.OpK:
+                            Console.Write( "Op: " + tree.attr.op);
+                            break;
+                        case ExpKind.ConstK:
+                            Console.Write("Const: " + tree.attr.val);
+                            break;
+                        case ExpKind.IdK:
+                            Console.Write("Id: " + tree.attr.name);
+                            break;
+                        default:
+                            Console.Write("Unknown ExpNode kind");
+                            break;
+                    }
+                }
+                Console.Write("Unknown node kind");
+                for (i = 0; i < MAXCHILDREN; i++)
+                    printTree(tree.child[i]);
+                tree = tree.sibling;
+            }
+        }
+
     }
-
-
-
+    
 
     public class MainClass
     {
         public static void Main()
         {
             FileReader fd = new FileReader();
-            fd.readAllFile("C:\\Users\\ahmad\\Documents\\Visual Studio 2017\\Projects\\ScannerProject\\ScannerProject\\code.txt"); // replacable path
+            fd.readAllFile("C:\\Users\\fhama\\Desktop\\Compiler-master\\ScannerProject\\ScannerProject\\bin\\Debug\\code.txt"); // replacable path
             Parser P = new Parser(fd);
             P.parse();
             Console.ReadLine();

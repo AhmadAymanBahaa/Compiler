@@ -33,3 +33,10 @@ C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.cs
 C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.CoreCompileInputs.cache
 C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
 C:\Users\fhama\Desktop\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csprojResolveAssemblyReference.cache
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.home.resources
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.import.resources
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.write.resources
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.csproj.GenerateResource.Cache
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.exe
+C:\Users\fhama\Desktop\Compiler-master\ScannerProject\ScannerProject\obj\Debug\ScannerProject.pdb
