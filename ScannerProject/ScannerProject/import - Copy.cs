@@ -5,7 +5,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -29,13 +28,13 @@ namespace ScannerProject
 
         private void button1_Click(object sender, EventArgs e)
         {
-                DialogResult dr = openFileDialog1.ShowDialog();
-                if (dr == System.Windows.Forms.DialogResult.OK)
-                {
-                    textBox1.Text = openFileDialog1.FileName;
-                    file.readAllFile(textBox1.Text);
-                    textBox2.Text = System.IO.File.ReadAllText(openFileDialog1.FileName);
-                }
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                textBox1.Text = openFileDialog1.FileName;
+                file.readAllFile(textBox1.Text);
+                textBox2.Text = System.IO.File.ReadAllText(openFileDialog1.FileName);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -86,12 +85,6 @@ namespace ScannerProject
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Parse page = new Parse(textBox1.Text);
-            page.ShowDialog();
         }
     }
 }

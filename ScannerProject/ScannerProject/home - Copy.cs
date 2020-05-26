@@ -33,12 +33,5 @@ namespace ScannerProject
             import page = new import();
             page.ShowDialog();
         }
-
-        [STAThread]
-        public static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.Run(new home());
-        }
     }
 }
